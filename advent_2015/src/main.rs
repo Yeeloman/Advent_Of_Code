@@ -7,4 +7,5 @@ fn main() {
     io::stdin().read_line(&mut input).unwrap();
 
     fnhelp::week_1::day_1(&input);
+
 }
