@@ -30,3 +30,5 @@ Cargo.lock
 
 # Ignore system files from Windows
 Thumbs.db
+
+/src/inputs/stract
