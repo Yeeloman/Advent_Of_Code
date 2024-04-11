@@ -1,9 +1,15 @@
 pub mod week_1 {
+
+    pub fn challenges() {
+        day_1();
+        day_2();
+    }
     use std::fs::File;
     use std::io::{BufRead, BufReader, Read};
+
     #[allow(dead_code)]
     #[allow(unused_variables)]
-    pub fn day_1() -> () {
+    fn day_1() -> () {
         if let Ok(mut file) = File::open("src/inputs/in_1") {
             let input = &mut String::new();
             let mut output = 0;
@@ -31,7 +37,7 @@ pub mod week_1 {
 
     #[allow(dead_code)]
     #[allow(unused_variables)]
-    pub fn day_2() -> () {
+    fn day_2() -> () {
         if let Ok(file) = File::open("src/inputs/in_2") {
             let reader = BufReader::new(file);
             let mut total_paper: u32 = 0;
@@ -62,21 +68,21 @@ pub mod week_1 {
 
     #[allow(dead_code)]
     #[allow(unused_variables)]
-    pub fn day_3() -> () {}
+    fn day_3() -> () {}
 
     #[allow(dead_code)]
     #[allow(unused_variables)]
-    pub fn day_4() -> () {}
+    fn day_4() -> () {}
 
     #[allow(dead_code)]
     #[allow(unused_variables)]
-    pub fn day_5() -> () {}
+    fn day_5() -> () {}
 
     #[allow(dead_code)]
     #[allow(unused_variables)]
-    pub fn day_6() -> () {}
+    fn day_6() -> () {}
 
     #[allow(dead_code)]
     #[allow(unused_variables)]
-    pub fn day_7() -> () {}
+    fn day_7() -> () {}
 }
