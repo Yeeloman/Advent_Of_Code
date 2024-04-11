@@ -32,7 +32,6 @@ pub mod week_1 {
     #[allow(dead_code)]
     #[allow(unused_variables)]
     pub fn day_2() -> () {
-
         if let Ok(file) = File::open("src/inputs/in_2") {
             let reader = BufReader::new(file);
             let mut total_paper: u32 = 0;
@@ -51,7 +50,8 @@ pub mod week_1 {
                         let hl = h * l;
                         let min_side = [lw, wh, hl].iter().min().unwrap().clone();
                         total_paper += 2 * (lw + wh + hl) + min_side;
-                        total_ribbon += 2 * [l + w, w + h, h + l].iter().min().unwrap() + (l * w * h);
+                        total_ribbon +=
+                            2 * [l + w, w + h, h + l].iter().min().unwrap() + (l * w * h);
                     }
                 }
             }
@@ -62,21 +62,21 @@ pub mod week_1 {
 
     #[allow(dead_code)]
     #[allow(unused_variables)]
-    pub fn day_3(input: &str) -> () {}
+    pub fn day_3() -> () {}
 
     #[allow(dead_code)]
     #[allow(unused_variables)]
-    pub fn day_4(input: &str) -> () {}
+    pub fn day_4() -> () {}
 
     #[allow(dead_code)]
     #[allow(unused_variables)]
-    pub fn day_5(input: &str) -> () {}
+    pub fn day_5() -> () {}
 
     #[allow(dead_code)]
     #[allow(unused_variables)]
-    pub fn day_6(input: &str) -> () {}
+    pub fn day_6() -> () {}
 
     #[allow(dead_code)]
     #[allow(unused_variables)]
-    pub fn day_7(input: &str) -> () {}
+    pub fn day_7() -> () {}
 }
