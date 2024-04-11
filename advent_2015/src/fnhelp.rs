@@ -3,12 +3,16 @@ pub mod week_1 {
     pub fn challenges() {
         day_1();
         day_2();
+        day_3();
+        day_4();
+        day_5();
+        day_6();
+        day_7();
     }
+
     use std::fs::File;
     use std::io::{BufRead, BufReader, Read};
 
-    #[allow(dead_code)]
-    #[allow(unused_variables)]
     fn day_1() -> () {
         if let Ok(mut file) = File::open("src/inputs/in_1") {
             let input = &mut String::new();
@@ -35,8 +39,6 @@ pub mod week_1 {
         }
     }
 
-    #[allow(dead_code)]
-    #[allow(unused_variables)]
     fn day_2() -> () {
         if let Ok(file) = File::open("src/inputs/in_2") {
             let reader = BufReader::new(file);
@@ -66,23 +68,13 @@ pub mod week_1 {
         }
     }
 
-    #[allow(dead_code)]
-    #[allow(unused_variables)]
     fn day_3() -> () {}
 
-    #[allow(dead_code)]
-    #[allow(unused_variables)]
     fn day_4() -> () {}
 
-    #[allow(dead_code)]
-    #[allow(unused_variables)]
     fn day_5() -> () {}
 
-    #[allow(dead_code)]
-    #[allow(unused_variables)]
     fn day_6() -> () {}
 
-    #[allow(dead_code)]
-    #[allow(unused_variables)]
     fn day_7() -> () {}
 }
