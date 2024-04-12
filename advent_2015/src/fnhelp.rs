@@ -10,6 +10,7 @@ pub mod week_1 {
         day_7();
     }
 
+    use std::collections::HashMap;
     use std::fs::File;
     use std::io::{BufRead, BufReader, Read};
 
@@ -68,7 +69,58 @@ pub mod week_1 {
         }
     }
 
-    fn day_3() -> () {}
+    fn day_3() -> () {
+        if let Ok(mut file) = File::open("src/inputs/in_3") {
+            let content = &mut String::new();
+            let mut visited_houses = vec![(0,0)];
+            let mut current_house: (i32, i32) = (0, 0);
+
+            let mut directions = HashMap::new();
+            directions.insert('<', (-1, 0));
+            directions.insert('>', (1, 0));
+            directions.insert('^', (0, 1));
+            directions.insert('v', (0, -1));
+
+            file.read_to_string( content).unwrap();
+
+            for c in content.chars() {
+
+                //calculate the position of the current house
+                if "<>^v".contains(c) {
+                    if let Some(pos) = directions.get(&c) {
+                        current_house = (
+                            current_house.0 + pos.0,
+                            current_house.1 + pos.1,
+                        )
+                    }
+                } else {
+                    continue;
+                }
+
+                //enters this if the current house is new
+                if !found(
+                    current_house,
+                    &visited_houses) {
+                        visited_houses.push(current_house);
+
+                }
+            }
+            println!("Challenge Day 3 Part 1: {}", visited_houses.len());
+        }
+    }
+
+    //helper function for day 3
+    //returns true if found
+    fn found(array_to_find: (i32, i32),
+            array_to_search: &[(i32, i32)]) -> bool {
+        let mut found: bool = false;
+        for row in array_to_search {
+            if array_to_find == *row {
+                found = true
+            }
+        }
+        found
+    }
 
     fn day_4() -> () {}
 
