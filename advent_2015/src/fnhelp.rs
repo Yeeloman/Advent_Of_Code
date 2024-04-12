@@ -3,14 +3,14 @@ pub mod week_1 {
     pub fn challenges() {
         day_1();
         day_2();
-        day_3();
+        day_3::part_1();
+        day_3::part_2();
         day_4();
         day_5();
         day_6();
         day_7();
     }
 
-    use std::collections::HashMap;
     use std::fs::File;
     use std::io::{BufRead, BufReader, Read};
 
@@ -69,58 +69,117 @@ pub mod week_1 {
         }
     }
 
-    fn day_3() -> () {
-        if let Ok(mut file) = File::open("src/inputs/in_3") {
-            let content = &mut String::new();
-            let mut visited_houses = vec![(0,0)];
-            let mut current_house: (i32, i32) = (0, 0);
+    mod day_3 {
 
-            let mut directions = HashMap::new();
-            directions.insert('<', (-1, 0));
-            directions.insert('>', (1, 0));
-            directions.insert('^', (0, 1));
-            directions.insert('v', (0, -1));
+        use std::collections::HashMap;
+        use std::fs::File;
+        use std::io::Read;
 
-            file.read_to_string( content).unwrap();
+        struct Directions {
+            directions: HashMap<char, (i32, i32)>,
+        }
+        impl Directions {
+            fn new() -> Self {
+                let mut directions = HashMap::new();
+                directions.insert('<', (-1, 0));
+                directions.insert('>', (1, 0));
+                directions.insert('^', (0, 1));
+                directions.insert('v', (0, -1));
 
-            for c in content.chars() {
+                Directions { directions }
+            }
+            fn get(&self, c: &char) -> Option<(i32, i32)> {
+                self.directions.get(&c).cloned()
+            }
+        }
 
-                //calculate the position of the current house
-                if "<>^v".contains(c) {
-                    if let Some(pos) = directions.get(&c) {
-                        current_house = (
-                            current_house.0 + pos.0,
-                            current_house.1 + pos.1,
-                        )
+        pub fn part_1() -> () {
+            if let Ok(mut file) = File::open("src/inputs/in_3") {
+                let content = &mut String::new();
+                let mut visited_houses = vec![(0,0)];
+                let mut current_house: (i32, i32) = (0, 0);
+
+
+                file.read_to_string( content).unwrap();
+
+                for c in content.chars() {
+
+                    //calculate the position of the current house
+                    if "<>^v".contains(c) {
+                        current_house = calculate_pos(c, current_house);
+                    } else {
+                        continue;
                     }
-                } else {
-                    continue;
+
+                    //enters this if the current house is new
+                    if !found(
+                        current_house,
+                        &visited_houses) {
+                            visited_houses.push(current_house);
+
+                    }
                 }
+                println!("Challenge Day 3 Part 1: {}", visited_houses.len());
+            }
+        }
 
-                //enters this if the current house is new
-                if !found(
-                    current_house,
-                    &visited_houses) {
-                        visited_houses.push(current_house);
+        pub fn part_2() -> () {
+            if let Ok(mut f) = File::open("src/inputs/in_3") {
+                let content = &mut String::new();
+                let mut visited_houses = vec![(0, 0)];
+                let mut santa_turn = true;
+                let mut santa_pos = (0,0);
+                let mut robot_pos = (0,0);
+                f.read_to_string(content).unwrap();
 
+                for c in content.chars() {
+                    if "<>^v".contains(c) {
+                        if santa_turn {
+                            santa_pos = calculate_pos(c, santa_pos);
+                            if !found(santa_pos, &visited_houses) {
+                                    visited_houses.push(santa_pos);
+                            }
+                            santa_turn = false;
+                        } else {
+                            robot_pos = calculate_pos(c, robot_pos);
+                            if !found(robot_pos, &visited_houses) {
+                                visited_houses.push(robot_pos);
+                            }
+                            santa_turn = true;
+                        }
+                    } else {
+                        continue;
+                    }
+                }
+                println!("Challenge Day 3 Part 2: {}", visited_houses.len());
+            }
+        }
+
+        fn calculate_pos(c: char, mut crnt_pos: (i32, i32)) -> (i32, i32) {
+            let directions = Directions::new();
+            //calculate the position of the current house
+                if let Some(pos) = directions.get(&c) {
+                    crnt_pos = (
+                        crnt_pos.0 + pos.0,
+                        crnt_pos.1 + pos.1,
+                    )
+                }
+                crnt_pos
+        }
+        //helper function for day 3
+        //returns true if found
+        fn found(array_to_find: (i32, i32),
+                array_to_search: &[(i32, i32)]) -> bool {
+            let mut found: bool = false;
+            for row in array_to_search {
+                if array_to_find == *row {
+                    found = true
                 }
             }
-            println!("Challenge Day 3 Part 1: {}", visited_houses.len());
+            found
         }
     }
 
-    //helper function for day 3
-    //returns true if found
-    fn found(array_to_find: (i32, i32),
-            array_to_search: &[(i32, i32)]) -> bool {
-        let mut found: bool = false;
-        for row in array_to_search {
-            if array_to_find == *row {
-                found = true
-            }
-        }
-        found
-    }
 
     fn day_4() -> () {}
 
