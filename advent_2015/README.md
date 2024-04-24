@@ -40,3 +40,14 @@ For example:
   - A present with dimensions 2x3x4 requires 2+2+3+3 = 10 feet of ribbon to wrap the present plus 2*3*4 = 24 feet of ribbon for the bow, for a total of 34 feet.
   - A present with dimensions 1x1x10 requires 1+1+1+1 = 4 feet of ribbon to wrap the present plus 1*1*10 = 10 feet of ribbon for the bow, for a total of 14 feet.
 ```
+
+## Day 3:
+
+```
+- > delivers presents to 2 houses: one at the starting location, and one to the east.
+- ^>v< delivers presents to 4 houses in a square, including twice to the house at his starting/ending location.
+- ^v^v^v^v^v delivers a bunch of presents to some very lucky children at only 2 houses.
+- ^v delivers presents to 3 houses, because Santa goes north, and then Robo-Santa goes south.
+- ^>v< now delivers presents to 3 houses, and Santa and Robo-Santa end up back where they started.
+- ^v^v^v^v^v now delivers presents to 11 houses, with Santa going one direction and Robo-Santa going the other.
+```

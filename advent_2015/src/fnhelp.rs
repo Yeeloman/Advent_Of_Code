@@ -116,7 +116,6 @@ pub mod week_1 {
                         current_house,
                         &visited_houses) {
                             visited_houses.push(current_house);
-
                     }
                 }
                 println!("Challenge Day 3 Part 1: {}", visited_houses.len());
@@ -181,7 +180,26 @@ pub mod week_1 {
     }
 
 
-    fn day_4() -> () {}
+    fn day_4() -> () {
+
+        if let Ok(mut file) = File::open("src/inputs/in_4") {
+            let mut input = String::new();
+            file.read_to_string(&mut input).unwrap();
+            input = input.trim_end_matches('\n').to_string();
+            let mut num = 1;
+            loop {
+                let hashed_input = format!("{}{}", input, num);
+                let return_val = md5::compute(hashed_input.as_bytes());
+                let return_val = format!("{:x}", return_val);
+                // to find the answer for part 2 add a 0 below
+                if return_val.starts_with("00000") {
+                    break;
+                }
+                num += 1;
+            }
+            println!("Challenge 4 Part 1/2: {}", num);
+        }
+    }
 
     fn day_5() -> () {}
 
