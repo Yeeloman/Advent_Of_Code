@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::Read;
 
-pub fn day_1() {
+pub fn main() {
     if let Ok(mut file) = File::open("src/inputs/in_1") {
         let input = &mut String::new();
         let mut first_list: Vec<i32> = Vec::new();

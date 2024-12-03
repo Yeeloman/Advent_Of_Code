@@ -1,62 +1,7 @@
 use std::fs::File;
 use std::io::{self, Read};
 
-#[allow(non_snake_case)]
-#[allow(dead_code)]
-pub fn day_2_approach_A() {
-    fn is_increasing(nums: &[i32]) -> bool {
-        nums.windows(2).all(|pair| pair[0] < pair[1])
-    }
-
-    fn is_decreasing(nums: &[i32]) -> bool {
-        nums.windows(2).all(|pair| pair[0] > pair[1])
-    }
-
-    // const PATH: &str = "src/inputs/test";
-    const PATH: &str = "src/inputs/in_2";
-    if let Ok(mut file) = File::open(PATH) {
-        let mut input: String = String::new();
-        let mut safe_reports = 0;
-
-        file.read_to_string(&mut input).unwrap();
-
-        for line in input.lines() {
-            let report: Vec<&str> = line.split_whitespace().collect();
-
-            let report_numbers: Result<Vec<i32>, _> =
-                report.iter().map(|&value| value.parse::<i32>()).collect();
-            match report_numbers {
-                Ok(nums) => {
-                    let dec = is_decreasing(&nums);
-                    let inc = is_increasing(&nums);
-                    if dec || inc {
-                        let mut safe = true;
-                        for (crnt, nxt) in nums.iter().zip(nums.iter().skip(1)) {
-                            let diff = (crnt - nxt).abs();
-                            if !(1 <= diff && diff <= 3) {
-                                safe = false;
-                                break;
-                            }
-                        }
-                        if safe {
-                            safe_reports += 1;
-                        }
-                    }
-                }
-                Err(e) => {
-                    eprintln!("Error parsing numbers: {}", e);
-                }
-            }
-        }
-        println!("the number of safe reports is {}", safe_reports)
-    }
-}
-
-#[allow(non_snake_case)]
-pub fn day_2_approach_B() -> io::Result<()> {
-    use std::fs::File;
-    use std::io::Read;
-
+pub fn main() -> io::Result<()> {
     const PATH: &str = "src/inputs/in_2";
 
     fn is_safe_report(report: &[i32]) -> bool {
