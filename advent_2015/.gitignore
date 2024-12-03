@@ -1,0 +1,34 @@
+# Compiled files
+/target/
+
+# Cargo lock file
+Cargo.lock
+
+# Generated documentation
+/target/doc/
+
+# macOS specific files
+.DS_Store
+
+# Visual Studio Code specific files
+.vscode/
+
+# IntelliJ Rust specific files
+.idea/
+
+# Rustfmt files
+**/*.rs.bk
+
+# Ignore executables compiled by Cargo
+# Release builds
+**/target/release/
+# Debug builds
+**/target/debug/
+
+# Ignore .swp files created by Vim
+*.swp
+
+# Ignore system files from Windows
+Thumbs.db
+
+/src/inputs/stract
