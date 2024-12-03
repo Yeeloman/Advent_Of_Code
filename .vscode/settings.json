@@ -1,6 +1,0 @@
-{
-    "rust-analyzer.linkedProjects": [
-        "./advent_2015/Cargo.toml",
-        "./advent_2015/Cargo.toml"
-    ]
-}
