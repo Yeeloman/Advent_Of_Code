@@ -1,6 +1,8 @@
 # Ignore build artifacts
 target/
 
+brainstorm
+
 # Ignore Cargo.lock if you don't want to commit it for multiple projects
 **/Cargo.lock
 

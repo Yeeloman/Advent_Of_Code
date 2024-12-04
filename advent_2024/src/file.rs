@@ -8,6 +8,20 @@ pub fn load_content(path: &str) -> io::Result<String> {
     Ok(input)
 }
 
+/// Loads lines from a file at the specified path into a vector of strings.
+///
+/// # Arguments
+///
+/// * `path` - A string slice that holds the path to the file.
+///
+/// # Returns
+///
+/// * `io::Result<Vec<String>>` - A result containing a vector of strings,
+///   where each string is a line from the file, or an I/O error.
+///
+/// # Errors
+///
+/// This function will return an error if the file cannot be opened or read.
 #[allow(dead_code)]
 pub fn load_lines(path: &str) -> io::Result<Vec<String>> {
     let mut lines: Vec<String> = Vec::new();
