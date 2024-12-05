@@ -40,7 +40,7 @@ fn recurse_help(
             && new_i < vec.len() as i32
             && new_j >= 0
             && new_j < vec[0].len() as i32
-            && vec[new_i as usize][new_j as usize] != '#'
+            && visited[new_i as usize][new_j as usize] != true
         {
             total += recurse_help(vec, new_i as usize, new_j as usize, word_index + 1, visited);
         }
