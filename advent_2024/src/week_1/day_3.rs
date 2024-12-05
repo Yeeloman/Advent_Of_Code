@@ -1,4 +1,4 @@
-use crate::file::load_content;
+use crate::file::{self, load_content};
 use regex::Regex;
 
 const PATH: &str = "src/inputs/in_3";
@@ -58,7 +58,6 @@ pub fn main() -> std::io::Result<()> {
     }
 
     total_2 = loop_re_part_2(input, &re);
-    println!("Total product part 1 is: {}", total_1);
-    println!("Total product part 2 is: {}", total_2);
+    file::print_challenges(3, total_1, total_2);
     Ok(())
 }

@@ -33,3 +33,10 @@ pub fn load_lines(path: &str) -> io::Result<Vec<String>> {
     }
     Ok(lines)
 }
+
+pub fn print_challenges(day: i32, part_1: i32, part_2: i32) {
+
+    println!("day {}:", day);
+    println!("\t- part 1: {}", part_1);
+    println!("\t- part 2: {}", part_2);
+}

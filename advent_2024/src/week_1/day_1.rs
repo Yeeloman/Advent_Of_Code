@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::Read;
+use crate::file;
 
 pub fn main() {
     if let Ok(mut file) = File::open("src/inputs/in_1") {
@@ -8,7 +9,7 @@ pub fn main() {
         let mut first_list: Vec<i32> = Vec::new();
         let mut second_list: Vec<i32> = Vec::new();
         let mut output_list: Vec<i32> = Vec::new();
-        let mut total = 0;
+        let mut total_1 = 0;
         let mut total_2 = 0;
         let mut dict: HashMap<i32, i32> = HashMap::new();
 
@@ -29,9 +30,8 @@ pub fn main() {
             output_list.push((a - b).abs())
         }
         for num in output_list {
-            total += num;
+            total_1 += num;
         }
-        println!("the total is {}", total);
 
         for num in second_list {
             if !dict.contains_key(&num) {
@@ -49,6 +49,6 @@ pub fn main() {
             }
         }
 
-        println!("{}", total_2)
+        file::print_challenges(1, total_1, total_2);
     }
 }

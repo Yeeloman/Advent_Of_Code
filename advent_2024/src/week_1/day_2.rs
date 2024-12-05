@@ -1,5 +1,6 @@
 use std::fs::File;
 use std::io::{self, Read};
+use crate::file;
 
 pub fn main() -> io::Result<()> {
     const PATH: &str = "src/inputs/in_2";
@@ -66,7 +67,6 @@ pub fn main() -> io::Result<()> {
             }
         }
     }
-    println!("The number of safe reports is {}", safe_reports_nrml);
-    println!("The number of safe reports is {}", safe_reports_extra);
+    file::print_challenges(2, safe_reports_nrml, safe_reports_extra);
     Ok(())
 }
