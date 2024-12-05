@@ -1,7 +1,7 @@
 use crate::file::{self, load_content};
 
 const PATH: &str = "src/inputs/in_4";
-const WORD: &str = "XMAS";
+const WORD_PART_1: &str = "XMAS";
 const DIRECTIONS: [(i32, i32); 8] = [
     (-1, -1),
     (-1, 0),
@@ -12,31 +12,94 @@ const DIRECTIONS: [(i32, i32); 8] = [
     (1, 0),
     (1, 1),
 ];
+const XDIRECTIONS: [((i32, i32), (i32, i32)); 2] = [((-1, -1), (1, 1)), ((-1, 1), (1, -1))];
 
-fn find_recurse(outer: usize, inner: usize, vec: &Vec<Vec<char>>) -> i32 {
+fn find_recurse_part_1(outer: usize, inner: usize, vec: &Vec<Vec<char>>) -> i32 {
     let mut total = 0;
     for i in 0..outer {
         for j in 0..inner {
-            if WORD.starts_with(vec[i][j]) {
-                total += recurse_help(&vec, i, j, 0, None);
+            if WORD_PART_1.starts_with(vec[i][j]) {
+                total += recurse_help_part_1(&vec, i, j, 0, None);
             }
         }
     }
     total
 }
 
-fn recurse_help(
+fn find_recurse_part_2(outer: usize, inner: usize, vec: &Vec<Vec<char>>) -> i32 {
+    let mut total = 0;
+    for i in 0..outer {
+        for j in 0..inner {
+            if vec[i][j] == 'A' {
+                total += recurse_help_part_2(&vec, i, j);
+            }
+        }
+    }
+    total
+}
+
+fn check_bounds(i: i32, j: i32, vec: &Vec<Vec<char>>) -> bool {
+    if i >= 0 && j >= 0 && i < vec.len() as i32 && j < vec[0].len() as i32 {
+        return true;
+    }
+    false
+}
+#[allow(unused_variables)]
+fn recurse_help_part_2(vec: &Vec<Vec<char>>, i: usize, j: usize) -> i32 {
+    let mut total = 0;
+
+    let process_direction = |dir1: ((i32, i32), (i32, i32)), dir2: ((i32, i32), (i32, i32))| {
+        let (dir1_start, dir1_end) = dir1;
+        let (dir2_start, dir2_end) = dir2;
+
+        let (new_i1_start, new_j1_start) = (i as i32 + dir1_start.0, j as i32 + dir1_start.1);
+        let (new_i1_end, new_j1_end) = (i as i32 + dir1_end.0, j as i32 + dir1_end.1);
+
+        let (new_i2_start, new_j2_start) = (i as i32 + dir2_start.0, j as i32 + dir2_start.1);
+        let (new_i2_end, new_j2_end) = (i as i32 + dir2_end.0, j as i32 + dir2_end.1);
+
+        if check_bounds(new_i1_start, new_j1_start, vec)
+            && check_bounds(new_i1_end, new_j1_end, vec)
+            && check_bounds(new_i2_start, new_j2_start, vec)
+            && check_bounds(new_i2_end, new_j2_end, vec)
+        {
+            let check_first_diagonal = (vec[new_i1_start as usize][new_j1_start as usize] == 'M'
+                && vec[i][j] == 'A'
+                && vec[new_i1_end as usize][new_j1_end as usize] == 'S')
+                || (vec[new_i1_start as usize][new_j1_start as usize] == 'S'
+                    && vec[i][j] == 'A'
+                    && vec[new_i1_end as usize][new_j1_end as usize] == 'M');
+
+            let check_second_diagonal = (vec[new_i2_start as usize][new_j2_start as usize] == 'M'
+                && vec[i][j] == 'A'
+                && vec[new_i2_end as usize][new_j2_end as usize] == 'S')
+                || (vec[new_i2_start as usize][new_j2_start as usize] == 'S'
+                    && vec[i][j] == 'A'
+                    && vec[new_i2_end as usize][new_j2_end as usize] == 'M');
+
+            if check_first_diagonal && check_second_diagonal {
+                return 1;
+            }
+        }
+        0
+    };
+
+    total += process_direction(XDIRECTIONS[0], XDIRECTIONS[1]);
+    total
+}
+
+fn recurse_help_part_1(
     vec: &Vec<Vec<char>>,
     i: usize,
     j: usize,
     word_index: usize,
     direction: Option<(i32, i32)>,
 ) -> i32 {
-    if vec[i][j] != WORD.chars().nth(word_index).unwrap() {
+    if vec[i][j] != WORD_PART_1.chars().nth(word_index).unwrap() {
         return 0;
     }
 
-    if word_index == WORD.len() - 1 {
+    if word_index == WORD_PART_1.len() - 1 {
         return 1;
     }
 
@@ -47,7 +110,7 @@ fn recurse_help(
         let new_j = j as i32 + dj;
 
         if new_i >= 0 && new_i < vec.len() as i32 && new_j >= 0 && new_j < vec[0].len() as i32 {
-            total += recurse_help(
+            total += recurse_help_part_1(
                 vec,
                 new_i as usize,
                 new_j as usize,
@@ -79,8 +142,9 @@ pub fn main() -> std::io::Result<()> {
     }
 
     let (outer_len, inner_len) = (in_vec.len(), in_vec[0].len());
-    total_1 = find_recurse(outer_len, inner_len, &in_vec);
+    total_1 = find_recurse_part_1(outer_len, inner_len, &in_vec);
+    total_2 = find_recurse_part_2(outer_len, inner_len, &in_vec);
 
-    file::print_challenges(4, total_1, 0);
+    file::print_challenges(4, total_1, total_2);
     Ok(())
 }
