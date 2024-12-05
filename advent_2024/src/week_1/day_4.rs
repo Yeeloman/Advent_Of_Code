@@ -14,24 +14,24 @@ const DIRECTIONS: [(i32, i32); 8] = [
 ];
 const XDIRECTIONS: [((i32, i32), (i32, i32)); 2] = [((-1, -1), (1, 1)), ((-1, 1), (1, -1))];
 
-fn find_recurse_part_1(outer: usize, inner: usize, vec: &Vec<Vec<char>>) -> i32 {
+fn part_1(outer: usize, inner: usize, vec: &Vec<Vec<char>>) -> i32 {
     let mut total = 0;
     for i in 0..outer {
         for j in 0..inner {
             if WORD_PART_1.starts_with(vec[i][j]) {
-                total += recurse_help_part_1(&vec, i, j, 0, None);
+                total += part_1_helper(&vec, i, j, 0, None);
             }
         }
     }
     total
 }
 
-fn find_recurse_part_2(outer: usize, inner: usize, vec: &Vec<Vec<char>>) -> i32 {
+fn part_2(outer: usize, inner: usize, vec: &Vec<Vec<char>>) -> i32 {
     let mut total = 0;
     for i in 0..outer {
         for j in 0..inner {
             if vec[i][j] == 'A' {
-                total += recurse_help_part_2(&vec, i, j);
+                total += part_2_helper(&vec, i, j);
             }
         }
     }
@@ -45,7 +45,7 @@ fn check_bounds(i: i32, j: i32, vec: &Vec<Vec<char>>) -> bool {
     false
 }
 #[allow(unused_variables)]
-fn recurse_help_part_2(vec: &Vec<Vec<char>>, i: usize, j: usize) -> i32 {
+fn part_2_helper(vec: &Vec<Vec<char>>, i: usize, j: usize) -> i32 {
     let mut total = 0;
 
     let process_direction = |dir1: ((i32, i32), (i32, i32)), dir2: ((i32, i32), (i32, i32))| {
@@ -88,7 +88,7 @@ fn recurse_help_part_2(vec: &Vec<Vec<char>>, i: usize, j: usize) -> i32 {
     total
 }
 
-fn recurse_help_part_1(
+fn part_1_helper(
     vec: &Vec<Vec<char>>,
     i: usize,
     j: usize,
@@ -110,7 +110,7 @@ fn recurse_help_part_1(
         let new_j = j as i32 + dj;
 
         if new_i >= 0 && new_i < vec.len() as i32 && new_j >= 0 && new_j < vec[0].len() as i32 {
-            total += recurse_help_part_1(
+            total += part_1_helper(
                 vec,
                 new_i as usize,
                 new_j as usize,
@@ -142,8 +142,8 @@ pub fn main() -> std::io::Result<()> {
     }
 
     let (outer_len, inner_len) = (in_vec.len(), in_vec[0].len());
-    total_1 = find_recurse_part_1(outer_len, inner_len, &in_vec);
-    total_2 = find_recurse_part_2(outer_len, inner_len, &in_vec);
+    total_1 = part_1(outer_len, inner_len, &in_vec);
+    total_2 = part_2(outer_len, inner_len, &in_vec);
 
     file::print_challenges(4, total_1, total_2);
     Ok(())
