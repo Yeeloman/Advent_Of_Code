@@ -1,4 +1,4 @@
-use crate::file::load_content;
+use crate::file;
 
 const PATH: &str = "src/inputs/test";
 
@@ -6,5 +6,6 @@ const PATH: &str = "src/inputs/test";
 pub fn main() -> std::io::Result<()> {
     let mut input = load_content(PATH)?;
 
+    file::print_challenges(0, 0, 0);
     Ok(())
 }
