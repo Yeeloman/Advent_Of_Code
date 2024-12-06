@@ -7,13 +7,13 @@ const PATH: &str = "src/inputs/test";
 pub fn main() -> std::io::Result<()> {
     let mut input = file::load_content(PATH)?;
 
-    let (rules, updates) = process_file(&input);
+    let (rules, updates) = process_file(input);
 
     file::print_challenges(5, 0, 0);
     Ok(())
 }
 
-fn process_file<'a>(input: &'a str) -> (Vec<(i32, i32)>, Vec<Vec<i32>>) {
+fn process_file(input: String) -> (Vec<(i32, i32)>, Vec<Vec<i32>>) {
     let mut empty_line: bool = false;
     let mut rules: Vec<(i32, i32)> = Vec::new();
     let mut updates: Vec<Vec<i32>> = Vec::new();
