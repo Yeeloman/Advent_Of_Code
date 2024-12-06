@@ -3,6 +3,7 @@ mod day_2;
 mod day_3;
 mod day_4;
 mod day_5;
+mod day_6;
 
 #[allow(unused_must_use)]
 pub fn challenges() {
@@ -11,4 +12,5 @@ pub fn challenges() {
     day_3::main();
     day_4::main();
     day_5::main();
+    day_6::main();
 }
