@@ -1,21 +1,18 @@
 use crate::file;
 use regex::Regex;
-use std::collections::HashMap;
-use topological_sort::TopologicalSort;
 
 const DAY: i32 = 5;
 const PATH: &str = "src/inputs/in_5";
 
-#[allow(unused_variables, unused_mut)]
 pub fn main() -> std::io::Result<()> {
     let (mut answer_1, mut answer_2): (i32, i32) = (0, 0);
     let mut incorrect_updates: Vec<Vec<i32>> = Vec::new();
-    let mut input = file::load_content(PATH)?;
+    let input = file::load_content(PATH)?;
 
     let (rules, updates) = process_file(input);
 
     for update in updates {
-        let (gd_update, mid) = follows_rule(&rules, &update);
+        let (gd_update, mid) = part_1::main(&rules, &update);
 
         if gd_update {
             answer_1 += mid;
@@ -24,86 +21,12 @@ pub fn main() -> std::io::Result<()> {
         }
     }
 
-    for update in incorrect_updates {
-        answer_2 += force_rules(&rules, update);
+    for mut update in incorrect_updates {
+        answer_2 += part_2::main(&mut update, &rules);
     }
 
     file::print_challenges(DAY, answer_1, answer_2);
     Ok(())
-}
-
-#[allow(unused_variables, unused_mut)]
-fn force_rules(rules: &Vec<(i32, i32)>, update: Vec<i32>) -> i32 {
-    let mut sorted_vec: Vec<i32> = Vec::new();
-    let mut ts = top_sort(&rules);
-
-    while let Some(node) = ts.pop() {
-        if update.contains(&node) {
-            sorted_vec.push(node);
-        }
-    }
-    if sorted_vec.is_empty() {
-        return 0;
-    }
-    sorted_vec[sorted_vec.len() / 2]
-}
-
-fn top_sort(rules: &Vec<(i32, i32)>) -> TopologicalSort<i32> {
-    let mut ts: TopologicalSort<i32> = TopologicalSort::new();
-    let mut in_degree: HashMap<i32, usize> = HashMap::new();
-    let mut all_nodes: HashMap<i32, bool> = HashMap::new();
-
-    for &(left, right) in rules {
-        ts.add_dependency(left, right);
-        *in_degree.entry(right).or_insert(0) += 1;
-        all_nodes.insert(left, true);
-        all_nodes.insert(right, true);
-    }
-
-    let mut zero_in_degree_found = false;
-    for node in all_nodes.keys() {
-        if !in_degree.contains_key(node) {
-            ts.add_dependency(0, *node);
-            zero_in_degree_found = true;
-            break;
-        }
-    }
-
-    if !zero_in_degree_found {
-        ts.add_dependency(0, 1);
-    }
-
-    ts
-}
-// fn top_sort(rules: &Vec<(i32, i32)>) -> TopologicalSort<i32> {
-//     let mut ts: TopologicalSort<i32> = TopologicalSort::new();
-
-//     for &(left, right) in rules {
-//         ts.add_dependency(left, right);
-//     }
-//     // println!("{:?}", ts);
-//     ts
-// }
-
-fn follows_rule(rules: &Vec<(i32, i32)>, update: &Vec<i32>) -> (bool, i32) {
-    let mut update_dict: HashMap<&i32, usize> = HashMap::new();
-
-    for (idx, page) in update.iter().enumerate() {
-        update_dict.insert(page, idx);
-    }
-
-    for (bf, af) in rules {
-        let before_applies: bool = update_dict.contains_key(bf);
-        let after_applies: bool = update_dict.contains_key(af);
-        if before_applies
-            && after_applies
-            && !(update_dict.get(bf).unwrap() < update_dict.get(af).unwrap())
-        {
-            return (false, 0);
-        }
-    }
-
-    (true, update[update.len() / 2])
 }
 
 fn process_file(input: String) -> (Vec<(i32, i32)>, Vec<Vec<i32>>) {
@@ -120,15 +43,99 @@ fn process_file(input: String) -> (Vec<(i32, i32)>, Vec<Vec<i32>>) {
         if empty_line {
             let update = line.split(",").map(|x| x.parse::<i32>().unwrap()).collect();
             updates.push(update);
-            // println!("{:?}", updates)
         } else {
             if let Some(cap) = re.captures(line) {
                 let n_1 = cap.get(1).unwrap().as_str().parse::<i32>().ok().unwrap();
                 let n_2 = cap.get(2).unwrap().as_str().parse::<i32>().ok().unwrap();
-                // println!("{:?}", (n_1, n_2));
                 rules.push((n_1, n_2));
             }
         }
     }
     (rules, updates)
+}
+
+mod part_1 {
+    use std::collections::HashMap;
+
+    pub fn main(rules: &Vec<(i32, i32)>, update: &Vec<i32>) -> (bool, i32) {
+        let mut update_dict: HashMap<&i32, usize> = HashMap::new();
+
+        for (idx, page) in update.iter().enumerate() {
+            update_dict.insert(page, idx);
+        }
+
+        for (bf, af) in rules {
+            let before_applies: bool = update_dict.contains_key(bf);
+            let after_applies: bool = update_dict.contains_key(af);
+            if before_applies
+                && after_applies
+                && !(update_dict.get(bf).unwrap() < update_dict.get(af).unwrap())
+            {
+                return (false, 0);
+            }
+        }
+
+        (true, update[update.len() / 2])
+    }
+}
+
+mod part_2 {
+
+    use std::cmp::Ordering;
+    use std::collections::{HashMap, HashSet};
+    #[derive(Debug)]
+    #[allow(dead_code)]
+    struct Rules {
+        before: HashSet<i32>,
+        after: HashSet<i32>,
+    }
+
+    fn rules_set_const(rules: &Vec<(i32, i32)>) -> HashMap<i32, Rules> {
+        let mut rules_set: HashMap<i32, Rules> = HashMap::new();
+
+        for (left, right) in rules {
+            rules_set
+                .entry(*right)
+                .or_insert_with(|| Rules {
+                    before: HashSet::new(),
+                    after: HashSet::new(),
+                })
+                .before
+                .insert(*left);
+            rules_set
+                .entry(*left)
+                .or_insert_with(|| Rules {
+                    before: HashSet::new(),
+                    after: HashSet::new(),
+                })
+                .after
+                .insert(*right);
+        }
+        rules_set
+    }
+
+    pub fn main(update: &mut Vec<i32>, rules: &Vec<(i32, i32)>) -> i32 {
+        let rules_set = rules_set_const(rules);
+        update.sort_by(|a, b| {
+            if let Some(rules_a) = rules_set.get(a) {
+                if rules_a.before.contains(b) {
+                    return Ordering::Less;
+                }
+                if rules_a.after.contains(b) {
+                    return Ordering::Greater;
+                }
+            }
+            if let Some(rules_b) = rules_set.get(b) {
+                if rules_b.before.contains(a) {
+                    return Ordering::Greater;
+                }
+                if rules_b.after.contains(a) {
+                    return Ordering::Less;
+                }
+            }
+            Ordering::Equal
+        });
+
+        update[update.len() / 2]
+    }
 }
