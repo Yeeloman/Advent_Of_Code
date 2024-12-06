@@ -48,16 +48,16 @@ fn loop_re_part_2(file: String, re: &Regex) -> i32 {
 #[allow(unused_variables, unused_mut)]
 pub fn main() -> std::io::Result<()> {
     let input = load_content(PATH)?;
-    let mut total_1 = 0;
-    let mut total_2;
+    let mut answer_1 = 0;
+    let mut answer_2;
 
     let re = Regex::new(r"mul\((\d{1,3}),(\d{1,3})\)|do\(\)|don\'t\(\)").unwrap();
 
     for line in input.clone().lines() {
-        total_1 = loop_re_part_1(line, &re);
+        answer_1 = loop_re_part_1(line, &re);
     }
 
-    total_2 = loop_re_part_2(input, &re);
-    file::print_challenges(3, total_1, total_2);
+    answer_2 = loop_re_part_2(input, &re);
+    file::print_challenges(3, answer_1, answer_2);
     Ok(())
 }

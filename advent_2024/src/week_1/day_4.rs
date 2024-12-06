@@ -134,7 +134,7 @@ fn part_1_helper(
 pub fn main() -> std::io::Result<()> {
     let input = load_content(PATH)?;
     let mut in_vec: Vec<Vec<char>> = Vec::new();
-    let (total_1, total_2): (i32, i32);
+    let (answer_1, answer_2): (i32, i32);
 
     for line in input.lines() {
         let ln_vec: Vec<char> = line.chars().collect();
@@ -142,9 +142,9 @@ pub fn main() -> std::io::Result<()> {
     }
 
     let (outer_len, inner_len) = (in_vec.len(), in_vec[0].len());
-    total_1 = part_1(outer_len, inner_len, &in_vec);
-    total_2 = part_2(outer_len, inner_len, &in_vec);
+    answer_1 = part_1(outer_len, inner_len, &in_vec);
+    answer_2 = part_2(outer_len, inner_len, &in_vec);
 
-    file::print_challenges(4, total_1, total_2);
+    file::print_challenges(4, answer_1, answer_2);
     Ok(())
 }

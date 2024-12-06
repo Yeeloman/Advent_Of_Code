@@ -9,8 +9,8 @@ pub fn main() {
         let mut first_list: Vec<i32> = Vec::new();
         let mut second_list: Vec<i32> = Vec::new();
         let mut output_list: Vec<i32> = Vec::new();
-        let mut total_1 = 0;
-        let mut total_2 = 0;
+        let mut answer_1 = 0;
+        let mut answer_2 = 0;
         let mut dict: HashMap<i32, i32> = HashMap::new();
 
         file.read_to_string(input).unwrap();
@@ -30,7 +30,7 @@ pub fn main() {
             output_list.push((a - b).abs())
         }
         for num in output_list {
-            total_1 += num;
+            answer_1 += num;
         }
 
         for num in second_list {
@@ -44,11 +44,11 @@ pub fn main() {
         }
         for num in first_list {
             match dict.get(&num) {
-                Some(value) => total_2 += num * value,
-                None => total_2 += 0,
+                Some(value) => answer_2 += num * value,
+                None => answer_2 += 0,
             }
         }
 
-        file::print_challenges(1, total_1, total_2);
+        file::print_challenges(1, answer_1, answer_2);
     }
 }
