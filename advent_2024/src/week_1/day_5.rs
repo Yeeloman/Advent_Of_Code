@@ -2,6 +2,8 @@ use crate::file;
 use regex::Regex;
 use std::collections::HashMap;
 
+
+const DAY: i32 = 0;
 const PATH: &str = "src/inputs/in_5";
 
 #[allow(unused_variables, unused_mut)]
@@ -19,7 +21,7 @@ pub fn main() -> std::io::Result<()> {
         }
     }
 
-    file::print_challenges(5, answer_1, answer_2);
+    file::print_challenges(DAY, answer_1, answer_2);
     Ok(())
 }
 
