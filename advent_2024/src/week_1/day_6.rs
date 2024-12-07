@@ -3,7 +3,7 @@ use std::collections::HashSet;
 use std::io::{Error, ErrorKind};
 
 const DAY: i32 = 6;
-const PATH: &str = "src/inputs/test";
+const PATH: &str = "src/inputs/in_6";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 enum Direction {
@@ -53,11 +53,7 @@ impl Guard {
     }
 
     fn walk(&mut self, next: (usize, usize)) {
-        let (di, dj) = self.orientation.vector();
-
-        let new_i = (next.0 as i32 + di) as usize;
-        let new_j = (next.1 as i32 + dj) as usize;
-        self.position = (new_i, new_j);
+        self.position = (next.0, next.1);
         self.visited.insert(self.position);
     }
 
@@ -88,25 +84,13 @@ pub fn main() -> std::io::Result<()> {
         let (new_i, new_j) = (crnt_pos.0 as i32+ mv_dir.0, crnt_pos.1 as i32+ mv_dir.1);
         if new_i < 0 || new_i > map.len() as i32 - 1|| new_j < 0 || new_j > map[0].len() as i32 - 1 {
             in_patrol = false;
-            grd.walk((new_i as usize, new_j as usize));
             continue;
         }
 
         if map[new_i as usize][new_j as usize] == "#".chars().next().unwrap() {
-            println!("guard turns");
             grd.turn();
         } else {
-            println!("guard position {:?}", grd.position);
-            println!("quard orientation {:?}", grd.orientation);
-            println!("guard vec {:?}", grd.orientation.vector());
-            println!("quard path count {:?}", grd.path_count());
-
             grd.walk((new_i as usize, new_j as usize));
-            println!("guard walks");
-            println!("guard position {:?}", grd.position);
-            println!("quard orientation {:?}", grd.orientation);
-            println!("guard vec {:?}", grd.orientation.vector());
-            println!("quard path count {:?}", grd.path_count());
         }
     }
 
