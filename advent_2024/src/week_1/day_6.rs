@@ -89,7 +89,7 @@ pub fn main() -> std::io::Result<()> {
     let grd_2 = grd.clone();
     part_1::main(&mut grd, &map);
 
-    // let answer_2 = part_2::main(&grd_2, &mut map);
+    let answer_2 = part_2::main(&grd_2, &mut map);
 
     let answer_1 = grd.path_count() as i32;
     file::print_challenges(DAY, answer_1, answer_2);
