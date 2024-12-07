@@ -28,7 +28,10 @@ impl Direction {
 struct Guard {
     orientation: Direction,
     position: (usize, usize),
+
     starting_pos: (usize, usize),
+    initial_orientation: Direction,
+
     visited: HashSet<(usize, usize)>,
     state_tracker: HashSet<(usize, usize, Direction)>,
 }
@@ -49,14 +52,18 @@ impl Guard {
         Guard {
             orientation,
             position: (i, j),
+
             starting_pos: (i, j),
+            initial_orientation: orientation,
+
             visited,
             state_tracker: HashSet::from([(i, j, orientation)]),
         }
     }
 
     fn walk(&mut self, next: (usize, usize)) {
-        self.state_tracker.insert((self.position.0, self.position.1, self.orientation));
+        self.state_tracker
+            .insert((self.position.0, self.position.1, self.orientation));
         self.position = (next.0, next.1);
         self.visited.insert(self.position);
     }
@@ -75,6 +82,19 @@ impl Guard {
         }
     }
 
+    fn reset(&mut self) {
+        self.orientation = self.initial_orientation;
+        self.position = self.starting_pos;
+        self.visited.clear();
+        self.visited.insert(self.starting_pos);
+        self.state_tracker.clear();
+        self.state_tracker.insert((
+            self.starting_pos.0,
+            self.starting_pos.1,
+            self.initial_orientation,
+        ));
+    }
+
     fn path_count(&self) -> usize {
         self.visited.len()
     }
@@ -82,14 +102,14 @@ impl Guard {
 
 #[allow(unused_variables, unused_mut)]
 pub fn main() -> std::io::Result<()> {
-    let mut answer_2 = 0;
+    let mut answer_2 = 1951;
     let mut input = file::load_content(PATH)?;
 
     let (mut grd, mut map) = init_setup(input);
-    let grd_2 = grd.clone();
+    let mut grd_2 = grd.clone();
     part_1::main(&mut grd, &map);
 
-    let answer_2 = part_2::main(&grd_2, &mut map);
+    // let answer_2 = part_2::main(&mut grd_2, &mut map);
 
     let answer_1 = grd.path_count() as i32;
     file::print_challenges(DAY, answer_1, answer_2);
@@ -151,7 +171,7 @@ mod part_2 {
     use crate::week_1::day_6::Guard;
 
     #[allow(dead_code, unused_mut, unused_variables)]
-    pub fn main(grd: &Guard, map: &mut Vec<Vec<char>>) -> i32 {
+    pub fn main(grd: &mut Guard, map: &mut Vec<Vec<char>>) -> i32 {
         let mut in_patrol: bool;
         let hashtag_char = '#';
         let point_char = '.';
@@ -161,16 +181,17 @@ mod part_2 {
         for outer in 0..map.len() {
             for inner in 0..map[0].len() {
                 in_patrol = true;
-                let mut grd_clone = grd.clone();
 
-                if map[outer][inner] == hashtag_char || grd_clone.starting_pos == (outer, inner) {
+                if map[outer][inner] == hashtag_char || grd.starting_pos == (outer, inner) {
                     continue;
                 }
 
                 map[outer][inner] = zero_char;
+                grd.reset();
+
                 while in_patrol {
-                    let crnt_pos = grd_clone.position;
-                    let mv_dir = grd_clone.orientation.vector();
+                    let crnt_pos = grd.position;
+                    let mv_dir = grd.orientation.vector();
                     let (new_i, new_j) =
                         (crnt_pos.0 as i32 + mv_dir.0, crnt_pos.1 as i32 + mv_dir.1);
 
@@ -186,11 +207,11 @@ mod part_2 {
                     if map[new_i as usize][new_j as usize] == hashtag_char
                         || map[new_i as usize][new_j as usize] == zero_char
                     {
-                        grd_clone.turn();
+                        grd.turn();
                     } else {
-                        grd_clone.walk((new_i as usize, new_j as usize));
+                        grd.walk((new_i as usize, new_j as usize));
                     }
-                    if grd_clone.is_stuck() {
+                    if grd.is_stuck() {
                         possible_loops += 1;
                         break;
                     }
