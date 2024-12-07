@@ -24,12 +24,13 @@ impl Direction {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct Guard {
     orientation: Direction,
     position: (usize, usize),
-    history: Vec<(usize, usize)>,
+    starting_pos: (usize, usize),
     visited: HashSet<(usize, usize)>,
+    state_tracker: HashSet<(usize, usize, Direction)>,
 }
 
 impl Guard {
@@ -48,28 +49,21 @@ impl Guard {
         Guard {
             orientation,
             position: (i, j),
-            history: vec![(i, j)],
+            starting_pos: (i, j),
             visited,
+            state_tracker: HashSet::from([(i, j, orientation)]),
         }
     }
 
     fn walk(&mut self, next: (usize, usize)) {
+        self.state_tracker.insert((self.position.0, self.position.1, self.orientation));
         self.position = (next.0, next.1);
-        self.history.push(self.position);
         self.visited.insert(self.position);
     }
 
     fn is_stuck(&self) -> bool {
-        let history_len = self.history.len();
-        let loop_len = 4;
-
-        if history_len < loop_len * 2 {
-            return false;
-        }
-        let recent_path = &self.history[history_len - loop_len..];
-        let earlier_path = &self.history[history_len - loop_len * 2..history_len - loop_len];
-
-        recent_path == earlier_path
+        let current_state = (self.position.0, self.position.1, self.orientation);
+        self.state_tracker.contains(&current_state)
     }
 
     fn turn(&mut self) {
@@ -91,9 +85,11 @@ pub fn main() -> std::io::Result<()> {
     let mut answer_2 = 0;
     let mut input = file::load_content(PATH)?;
 
-    let (mut grd, map) = init_setup(input);
+    let (mut grd, mut map) = init_setup(input);
+    let grd_2 = grd.clone();
+    part_1::main(&mut grd, &map);
 
-    part_1::main(&mut grd, map);
+    let answer_2 = part_2::main(&grd_2, &mut map);
 
     let answer_1 = grd.path_count() as i32;
     file::print_challenges(DAY, answer_1, answer_2);
@@ -125,8 +121,10 @@ mod part_1 {
     use crate::week_1::day_6::Guard;
 
     #[allow(dead_code)]
-    pub fn main(grd: &mut Guard, map: Vec<Vec<char>>) {
+    pub fn main(grd: &mut Guard, map: &Vec<Vec<char>>) {
         let mut in_patrol: bool = true;
+        let hashtag_char = '#';
+
         while in_patrol {
             let crnt_pos = grd.position;
             let mv_dir = grd.orientation.vector();
@@ -140,7 +138,7 @@ mod part_1 {
                 continue;
             }
 
-            if map[new_i as usize][new_j as usize] == "#".chars().next().unwrap() {
+            if map[new_i as usize][new_j as usize] == hashtag_char {
                 grd.turn();
             } else {
                 grd.walk((new_i as usize, new_j as usize));
@@ -150,8 +148,56 @@ mod part_1 {
 }
 
 mod part_2 {
-    #[allow(dead_code)]
-    pub fn main() {
-        todo!()
+    use crate::week_1::day_6::Guard;
+
+    #[allow(dead_code, unused_mut, unused_variables)]
+    pub fn main(grd: &Guard, map: &mut Vec<Vec<char>>) -> i32 {
+        let mut in_patrol: bool;
+        let hashtag_char = '#';
+        let point_char = '.';
+        let zero_char = '0';
+        let mut possible_loops = 0;
+
+        for outer in 0..map.len() {
+            for inner in 0..map[0].len() {
+                in_patrol = true;
+                let mut grd_clone = grd.clone();
+
+                if map[outer][inner] == hashtag_char || grd_clone.starting_pos == (outer, inner) {
+                    continue;
+                }
+
+                map[outer][inner] = zero_char;
+                while in_patrol {
+                    let crnt_pos = grd_clone.position;
+                    let mv_dir = grd_clone.orientation.vector();
+                    let (new_i, new_j) =
+                        (crnt_pos.0 as i32 + mv_dir.0, crnt_pos.1 as i32 + mv_dir.1);
+
+                    if new_i < 0
+                        || new_i > map.len() as i32 - 1
+                        || new_j < 0
+                        || new_j > map[0].len() as i32 - 1
+                    {
+                        in_patrol = false;
+                        continue;
+                    }
+
+                    if map[new_i as usize][new_j as usize] == hashtag_char
+                        || map[new_i as usize][new_j as usize] == zero_char
+                    {
+                        grd_clone.turn();
+                    } else {
+                        grd_clone.walk((new_i as usize, new_j as usize));
+                    }
+                    if grd_clone.is_stuck() {
+                        possible_loops += 1;
+                        break;
+                    }
+                }
+                map[outer][inner] = point_char;
+            }
+        }
+        possible_loops
     }
 }
