@@ -12,6 +12,11 @@ pub fn main() -> std::io::Result<()> {
     Ok(())
 }
 
+mod process {
+    #[allow(dead_code)]
+    pub fn clean_data(input: String) {}
+}
+
 mod part_1 {
 
     #[allow(dead_code)]
@@ -19,7 +24,6 @@ mod part_1 {
         todo!()
     }
 }
-
 
 mod part_2 {
 

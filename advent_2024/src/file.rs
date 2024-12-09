@@ -1,4 +1,5 @@
 use std::fs::File;
+use std::fmt::Display;
 use std::io::{self, BufRead, Read};
 
 pub fn load_content(path: &str) -> io::Result<String> {
@@ -34,8 +35,11 @@ pub fn load_lines(path: &str) -> io::Result<Vec<String>> {
     Ok(lines)
 }
 
-pub fn print_challenges(day: i32, part_1: i32, part_2: i32) {
-
+pub fn print_challenges<Day: Display, Part1: Display, Part2: Display>(
+    day: Day,
+    part_1: Part1,
+    part_2: Part2,
+) {
     println!("day {}:", day);
     println!("\t- part 1: {}", part_1);
     println!("\t- part 2: {}", part_2);
