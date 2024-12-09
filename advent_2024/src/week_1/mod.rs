@@ -7,12 +7,8 @@ mod day_6;
 mod day_7;
 
 #[allow(unused_must_use)]
-pub fn challenges(done: Option<bool>) {
-    let mut print = false;
-    if let Some(done) = done {
-        print = done
-    }
-    if print {
+pub fn challenges(done: bool) {
+    if !done {
         day_1::main();
         day_2::main();
         day_3::main();
